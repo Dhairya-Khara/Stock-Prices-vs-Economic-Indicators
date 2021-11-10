@@ -22,16 +22,16 @@ def get_stock_data(ticker):
 
 # STEP 2 - Parse DataFrame object, i.e. make a list where each element is a tuple, first index is the date,
 # second index is the closing price
-def get_datetime_to_closing_prices():
+def get_datetime_to_closing_prices(stock_info):
     list_so_far = []
-    for index, row in df.iterrows():
+    for index, row in stock_info.iterrows():
         datetime_obj = datetime.datetime.strptime(row['Date'], '%Y-%m-%d')
         list_so_far.append((datetime_obj, row['Close']))
     return list_so_far
 
 
 # STEP 3 - Make a 2D List (list of lists) s.t. every element is a list of all the closing prices of a month
-def get_monthly_closing_prices(startingMonth):
+def get_monthly_closing_prices(startingMonth, datetime_to_closing_prices):
     current_month = startingMonth
     temp_list = []
     list_so_far = []
@@ -47,7 +47,7 @@ def get_monthly_closing_prices(startingMonth):
 
 
 # STEP 4 - Calculate Median for each month
-def calculate_median_values():
+def calculate_median_values(monthly_closing_prices):
     list_so_far = []
     for i in range(len(monthly_closing_prices)):
         list_so_far.append(statistics.median(monthly_closing_prices[i]))
@@ -73,21 +73,33 @@ def get_r_squared():
 
 
 # STEP 7 - Plot the Graph
-def plot_the_graph():
-    plt.plot(x, y, 'o')
-    plt.xlabel("Unemployment Rate")
-    plt.ylabel("Median Stock Price")
-    m, b = np.polyfit(x, y, 1)
-    plt.plot(x, m * x + b)
-    plt.show()
+# def plot_the_graph():
+#     plt.plot(x, y, 'o')
+#     plt.xlabel("Unemployment Rate")
+#     plt.ylabel("Median Stock Price")
+#     m, b = np.polyfit(x, y, 1)
+#     plt.plot(x, m * x + b)
+#     plt.show()
 
 
-df = get_stock_data('AAPL')  # STEP 1
-datetime_to_closing_prices = get_datetime_to_closing_prices()  # STEP 2
-monthly_closing_prices = get_monthly_closing_prices(4)  # STEP 3
-list_of_median_values = calculate_median_values()  # STEP 4
-list_of_unemployment_rates = get_list_of_unemployment_rates()  # STEP 5
-x = np.array(list_of_unemployment_rates)
-y = np.array(list_of_median_values)
-pprint(get_r_squared())  # STEP 6
-plot_the_graph()  # STEP 7
+# df = get_stock_data('AAPL')  # STEP 1
+# datetime_to_closing_prices = get_datetime_to_closing_prices()  # STEP 2
+# monthly_closing_prices = get_monthly_closing_prices(4)  # STEP 3
+# list_of_median_values = calculate_median_values()  # STEP 4
+# list_of_unemployment_rates = get_list_of_unemployment_rates()  # STEP 5
+# x = np.array(list_of_unemployment_rates)
+# y = np.array(list_of_median_values)
+# pprint(get_r_squared())  # STEP 6
+# # plot_the_graph()  # STEP 7
+
+
+def return_info_to_graph(stock_ticker):
+    stock_info = get_stock_data(stock_ticker)
+    datetime_to_closing_prices = get_datetime_to_closing_prices(stock_info)  # STEP 2
+    monthly_closing_prices = get_monthly_closing_prices(4, datetime_to_closing_prices)  # STEP 3
+    list_of_median_values = calculate_median_values(monthly_closing_prices)  # STEP 4
+    list_of_unemployment_rates = get_list_of_unemployment_rates()  # STEP 5
+    x = np.array(list_of_unemployment_rates)
+    y = np.array(list_of_median_values)
+    return x, y
+
