@@ -9,6 +9,12 @@ from graph3 import return_unemployed_per_opening_to_graph
 from CCI import return_info_to_graph_cci
 
 
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib
+
+matplotlib.use("TkAgg")
+
+
 # Mat Plot Lib, get x and y values from graph1.py
 def get_fig(stock_ticker):
     x, y = return_info_to_graph(stock_ticker)
