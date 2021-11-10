@@ -68,9 +68,9 @@ figure_x, figure_y, figure_w, figure_h = get_fig("AAPL").bbox.bounds
 # define the window layout, the third element is the actual graph
 layout = [[sg.Text('Enter Stock Ticker', font='Any 18')],
           [sg.Input(key='-INPUT-'), sg.Button('Search')],
-          [sg.Canvas(size=(figure_w, figure_h), key='-CANVAS-')],
-          [sg.Canvas(size=(figure_w, figure_h), key='-CANVAS1-')],
-          [sg.Canvas(size=(figure_w, figure_h), key='-CANVAS2-')]]
+          [sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS-'), sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS1-')],
+
+          [sg.Canvas(size=(figure_w , figure_h * 0.9), key='-CANVAS2-')]]
 
 # logic for window
 window = sg.Window('Stock Correlation',
@@ -91,5 +91,5 @@ while True:
         fig_photo_2.get_tk_widget().forget()
         fig_photo3.get_tk_widget().forget()
         fig_photo = draw_figure(window['-CANVAS-'].TKCanvas, get_fig(values['-INPUT-']))
-        fig_photo_2 = draw_figure(window['-CANVAS-'].TKCanvas, get_fig(values['-INPUT-']))
+        fig_photo_2 = draw_figure(window['-CANVAS2-'].TKCanvas, get_fig_2(values['-INPUT-']))
         fig_photo3 = draw_figure(window['-CANVAS1-'].TKCanvas, get_fig3(values['-INPUT-']))
