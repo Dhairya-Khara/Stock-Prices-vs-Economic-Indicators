@@ -1,0 +1,5 @@
+PySimpleGUI
+numpy
+matplotlib
+yfinance
+pandas

@@ -1,6 +1,5 @@
 """ Graph class """
 import statistics
-
 from numpy import *
 from pandas import DataFrame
 from typing import *

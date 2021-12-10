@@ -1,11 +1,9 @@
-import statistics
 import datetime
 import time
-import numpy as np
 import pandas as pd
 from numpy import *
+import numpy as np
 from pandas import DataFrame
-from typing import *
 from graph import Graph
 
 

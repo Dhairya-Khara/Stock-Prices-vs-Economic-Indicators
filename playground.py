@@ -1,7 +1,3 @@
-import http.client
-# import Autocomplete
-import statistics
-
 import PySimpleGUI as sg
 import numpy as np
 import matplotlib.pyplot as plt
