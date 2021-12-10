@@ -24,7 +24,7 @@ def draw_graph(graph, title, x_label, y_label):
 
     font = {'fontname': 'Franklin Gothic Medium', 'color': 'white'}
 
-    ax.text(1, 1, r_squared_text, transform=ax.transAxes, fontdict=font)
+    ax.text(1.01, 0.9, r_squared_text, transform=ax.transAxes, fontdict=font)
 
     plt.plot(x, y, 'o')
     plt.xlabel(x_label)

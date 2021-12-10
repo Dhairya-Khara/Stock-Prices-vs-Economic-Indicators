@@ -1,5 +1,6 @@
 from user_interface import *
 import yfinance as yf
+import statistics
 
 while True:
     event, values = window.read()

@@ -33,12 +33,6 @@ class UnemploymentCovid(Graph):
             list_so_far.append(row['Total'])
         return list_so_far
 
-    # def get_r_squared(self, x, y) -> float:
-    #     correlation_matrix = np.corrcoef(x, y)
-    #     correlation_xy = correlation_matrix[0, 1]
-    #     r_squared = correlation_xy ** 2
-    #     return r_squared
-
     def return_info_to_graph(self) -> tuple[ndarray, ndarray]:
         """ Returns a tuple of coordinates that matplotlib can graph """
         stock_info = self.get_stock_data()
