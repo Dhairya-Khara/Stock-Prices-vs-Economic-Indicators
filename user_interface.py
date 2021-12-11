@@ -22,7 +22,7 @@ def draw_graph(graph, title, x_label, y_label):
     r_squared = round(graph.get_r_squared(x, y), 2)
     r_squared_text = "r\N{SUPERSCRIPT TWO} = " + str(r_squared)
 
-    font = {'fontname': 'Franklin Gothic Medium', 'color': 'white'}
+    font = {'fontname': 'Franklin Gothic Medium', 'color': 'white', 'size': 8}
 
     ax.text(1.01, 0.9, r_squared_text, transform=ax.transAxes, fontdict=font)
 
