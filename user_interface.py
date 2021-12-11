@@ -1,6 +1,7 @@
 import PySimpleGUI as sg
 import numpy as np
 import matplotlib.pyplot as plt
+import yfinance as yf
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib
 from unemployment_before import UnemploymentBefore
@@ -8,7 +9,11 @@ from unemployment_covid import UnemploymentCovid
 from job_openings_before import JobOpeningBefore
 from job_openings_covid import JobOpeningsCovid
 
+
 matplotlib.use("TkAgg")
+graph_bg_color = '#343a40'
+dots_color = '#f1faee'
+trend_line_color = '#e63946'
 
 
 def draw_graph(graph, title, x_label, y_label):
@@ -26,12 +31,12 @@ def draw_graph(graph, title, x_label, y_label):
 
     ax.text(1.01, 0.9, r_squared_text, transform=ax.transAxes, fontdict=font)
 
-    plt.plot(x, y, 'o')
+    plt.plot(x, y, 'o', color=dots_color)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
     m, b = np.polyfit(x, y, 1)
-    plt.plot(x, m * x + b)
+    plt.plot(x, m * x + b, color=trend_line_color)
 
     fig.set_dpi(70)
     ax.spines['left'].set_color('#EEEEEE')
@@ -41,7 +46,7 @@ def draw_graph(graph, title, x_label, y_label):
     ax.title.set_color('#EEEEEE')
     ax.tick_params(axis='x', colors='#EEEEEE')
     ax.tick_params(axis='y', colors='#EEEEEE')
-    ax.set_facecolor('#757575')
+    ax.set_facecolor(graph_bg_color)
     fig.patch.set_facecolor('#232323')
     return fig
 
@@ -91,8 +96,12 @@ def error_fig():
     image = plt.imread('Error_image.jpg')
     plt.imshow(image)
     plt.axis('off')
-    fig.patch.set_facecolor('#232323')
+    fig.patch.set_facecolor(graph_bg_color)
     fig.set_dpi(70)
+
+    font = {'fontname': 'Franklin Gothic Medium', 'color': 'white', 'size': 12}
+    plt.text(-75, 600, 'The ticker you have entered corresponds to a stock we do not have the data for.',
+             fontdict=font)
     return fig
 
 
@@ -116,6 +125,7 @@ layout = [
     [sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS2-', background_color='#232323'),
      sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS3-', background_color='#232323')]]
 
+
 # logic for window
 window = sg.Window('Stock Correlation',
                    layout, force_toplevel=True, finalize=True, background_color='#232323')
@@ -126,3 +136,44 @@ photo_error = photo_unemployment_covid = draw_figure(window['-CANVAS1-'].TKCanva
 photo_unemployment_before = draw_figure(window['-CANVAS-'].TKCanvas, get_unemployment_before("AAPL", "Apple"))
 photo_job_openings_covid = draw_figure(window['-CANVAS3-'].TKCanvas, get_job_openings_covid("AAPL", "Apple"))
 photo_job_openings_before = draw_figure(window['-CANVAS2-'].TKCanvas, get_job_openings_before("AAPL", "Apple"))
+
+
+def main_loop(pe, g1, g2, g3, g4):
+    while True:
+        # show it all again and get buttons
+        event, values = window.read()
+        if event == sg.WIN_CLOSED or event == 'Exit':
+            break
+        values['-INPUT-'] = ''.join(filter(str.isalnum, values['-INPUT-']))[:5]
+        window['-INPUT-'].update(values['-INPUT-'])
+        if event == 'Search':
+            pe.get_tk_widget().forget()
+
+            g1.get_tk_widget().forget()
+            g2.get_tk_widget().forget()
+            g3.get_tk_widget().forget()
+            g4.get_tk_widget().forget()
+            try:
+                stock_query = values['-INPUT-'].upper()
+                ticker = yf.Ticker(stock_query)
+                company_name = ticker.info['longName'].removesuffix(', Inc.').removesuffix(' Inc.')
+
+                g1 = draw_figure(window['-CANVAS1-'].TKCanvas,
+                                 get_unemployment_covid(values['-INPUT-'], company_name))
+                g2 = draw_figure(window['-CANVAS-'].TKCanvas,
+                                 get_unemployment_before(values['-INPUT-'], company_name))
+                g3 = draw_figure(window['-CANVAS3-'].TKCanvas,
+                                 get_job_openings_covid(values['-INPUT-'], company_name))
+                g4 = draw_figure(window['-CANVAS2-'].TKCanvas,
+                                 get_job_openings_before(values['-INPUT-'], company_name))
+
+            except Exception:
+                pe.get_tk_widget().forget()
+                g1.get_tk_widget().forget()
+                g2.get_tk_widget().forget()
+                g3.get_tk_widget().forget()
+                g4.get_tk_widget().forget()
+                pe = draw_figure(window['-CANVAS-'].TKCanvas, error_fig())
+
+
+
