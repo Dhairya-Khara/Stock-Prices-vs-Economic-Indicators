@@ -32,14 +32,3 @@ class JobOpeningsCovid(Graph):
             list_so_far.append(row['Total'])
 
         return list_so_far
-
-    def return_info_to_graph(self) -> tuple[ndarray, ndarray]:
-        """ Returns a tuple of coordinates that matplotlib can graph """
-        stock_info = self.get_stock_data()
-        datetime_to_closing_prices = self.get_datetime_to_closing(stock_info)  # STEP 2
-        monthly_closing_prices = self.get_monthly_closing_prices(4, datetime_to_closing_prices)  # STEP 3
-        list_of_median_values = self.calculate_median_values(monthly_closing_prices)  # STEP 4
-        list_of_independent_variable_values = self.get_values_of_independent_variable()  # STEP 5
-        x = np.array(list_of_independent_variable_values)
-        y = np.array(list_of_median_values)
-        return x, y

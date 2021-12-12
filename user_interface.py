@@ -16,8 +16,8 @@ dots_color = '#f1faee'
 trend_line_color = '#e63946'
 
 
-def draw_graph(graph, title, x_label, y_label):
-    x, y = graph.return_info_to_graph()
+def draw_graph(graph, title, x_label, y_label, starting_month):
+    x, y = graph.return_info_to_graph(starting_month)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     plt.title(title,
@@ -58,7 +58,7 @@ def get_unemployment_covid(ticker, company_name):
         title = company_name + '\'s Median Monthly Stock Price \n vs Unemployment Rate (During COVID)'
     x_label = "Unemployment Rate"
     y_label = "Median Monthly Stock Price (USD)"
-    return draw_graph(UnemploymentCovid(ticker), title, x_label, y_label)
+    return draw_graph(UnemploymentCovid(ticker), title, x_label, y_label, 4)
 
 
 def get_unemployment_before(ticker, company_name):
@@ -68,7 +68,7 @@ def get_unemployment_before(ticker, company_name):
         title = company_name + '\'s Median Monthly Stock Price \n vs Unemployment Rate (During COVID)'
     x_label = "Unemployment Rate"
     y_label = "Median Monthly Stock Price (USD)"
-    return draw_graph(UnemploymentBefore(ticker), title, x_label, y_label)
+    return draw_graph(UnemploymentBefore(ticker), title, x_label, y_label, 8)
 
 
 def get_job_openings_covid(ticker, company_name):
@@ -78,7 +78,7 @@ def get_job_openings_covid(ticker, company_name):
         title = company_name + '\'s Median Monthly Stock Price \n vs Unemployment Rate (During COVID)'
     x_label = "Unemployed Per Job Opening"
     y_label = "Median Monthly Stock Price (USD)"
-    return draw_graph(JobOpeningsCovid(ticker), title, x_label, y_label)
+    return draw_graph(JobOpeningsCovid(ticker), title, x_label, y_label, 4)
 
 
 def get_job_openings_before(ticker, company_name):
@@ -88,7 +88,7 @@ def get_job_openings_before(ticker, company_name):
         title = company_name + '\'s Median Monthly Stock Price \n vs Unemployment Rate (During COVID)'
     x_label = "Unemployed Per Job Opening"
     y_label = "Median Monthly Stock Price (USD)"
-    return draw_graph(JobOpeningBefore(ticker), title, x_label, y_label)
+    return draw_graph(JobOpeningBefore(ticker), title, x_label, y_label, 8)
 
 
 def error_fig():
