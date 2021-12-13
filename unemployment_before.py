@@ -2,7 +2,6 @@ import datetime
 import time
 import pandas as pd
 from numpy import *
-import numpy as np
 from pandas import DataFrame
 from graph import Graph
 
