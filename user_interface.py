@@ -4,13 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import yfinance as yf
 import matplotlib
+
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from unemployment_before import UnemploymentBefore
 from unemployment_covid import UnemploymentCovid
 from job_openings_before import JobOpeningsBefore
 from job_openings_covid import JobOpeningsCovid
 from graph import get_r_squared, Graph
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, FigureCanvasTk, FigureCanvasAgg
-
 
 matplotlib.use("TkAgg")
 graph_bg_color = '#343a40'
@@ -103,6 +103,7 @@ def get_job_openings_before(ticker: str, company_name: str) -> plt.Figure:
 
 
 def error_fig() -> plt.Figure:
+    """ Returns the error figure to draw when the stock ticker entered is not valid """
     fig = plt.figure()
     image = plt.imread('Error_image.jpg')
     plt.imshow(image)
@@ -117,7 +118,8 @@ def error_fig() -> plt.Figure:
 
 
 # Function to draw graph
-def draw_figure(canvas, figure: plt.Figure):
+def draw_figure(canvas: sg.Canvas.TKCanvas, figure: plt.Figure) -> FigureCanvasTkAgg:
+    """ Returns figure on the given PySimpleGUI canvas"""
     figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
     figure_canvas_agg.draw()
     figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
@@ -136,7 +138,6 @@ layout = [
     [sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS2-', background_color='#232323'),
      sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS3-', background_color='#232323')]]
 
-
 # logic for window
 window = sg.Window('Stock Correlation',
                    layout, force_toplevel=True, finalize=True, background_color='#232323')
@@ -149,17 +150,18 @@ photo_job_openings_covid = draw_figure(window['-CANVAS3-'].TKCanvas, get_job_ope
 photo_job_openings_before = draw_figure(window['-CANVAS2-'].TKCanvas, get_job_openings_before("AAPL", "Apple"))
 
 
-def main_loop(pe, g1, g2, g3, g4):
+def main_loop(pe: FigureCanvasTkAgg, g1: FigureCanvasTkAgg, g2: FigureCanvasTkAgg,
+              g3: FigureCanvasTkAgg, g4: FigureCanvasTkAgg) -> None:
+    """ The main loop of the program which calls the functions to draw the canvases specific to the user's input """
     while True:
         # show it all again and get buttons
         event, values = window.read()
-        if event == sg.WIN_CLOSED or event == 'Exit':
+        if event in [sg.WIN_CLOSED, 'Exit']:
             break
         values['-INPUT-'] = ''.join(filter(str.isalnum, values['-INPUT-']))[:5]
         window['-INPUT-'].update(values['-INPUT-'])
         if event == 'Search':
             pe.get_tk_widget().forget()
-
             g1.get_tk_widget().forget()
             g2.get_tk_widget().forget()
             g3.get_tk_widget().forget()
