@@ -1,5 +1,5 @@
-PySimpleGUI
-numpy
-matplotlib
-yfinance
-pandas
+matplotlib==3.4.3
+numpy==1.21.4
+pandas==1.3.4
+PySimpleGUI==4.55.1
+yfinance==0.1.67
