@@ -1,4 +1,4 @@
-"""Please run this file. Make sure you 'run' the file and not 'Run file in Python Console'"""
+"""Please run this file. Make sure you 'run' the file and not 'Run File in Python Console'"""
 from user_interface import *
 
 if __name__ == '__main__':
