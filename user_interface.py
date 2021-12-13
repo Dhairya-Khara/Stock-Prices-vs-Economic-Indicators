@@ -2,12 +2,13 @@ import PySimpleGUI as sg
 import numpy as np
 import matplotlib.pyplot as plt
 import yfinance as yf
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib
 from unemployment_before import UnemploymentBefore
 from unemployment_covid import UnemploymentCovid
-from job_openings_before import JobOpeningBefore
+from job_openings_before import JobOpeningsBefore
 from job_openings_covid import JobOpeningsCovid
+from graph import get_r_squared
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 matplotlib.use("TkAgg")
@@ -17,6 +18,7 @@ trend_line_color = '#e63946'
 
 
 def draw_graph(graph, title, x_label, y_label, starting_month):
+    """"Returns fig which is a MatPlotLib graph plotting the x_label vs the y_label beginning with the starting_month"""
     x, y = graph.return_info_to_graph(starting_month)
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -24,7 +26,7 @@ def draw_graph(graph, title, x_label, y_label, starting_month):
               {'fontname': 'Franklin Gothic Medium'})
     plt.title(title)
 
-    r_squared = round(graph.get_r_squared(x, y), 2)
+    r_squared = round(get_r_squared(x, y), 2)
     r_squared_text = "r\N{SUPERSCRIPT TWO} = " + str(r_squared)
 
     font = {'fontname': 'Franklin Gothic Medium', 'color': 'white', 'size': 9}
@@ -52,6 +54,8 @@ def draw_graph(graph, title, x_label, y_label, starting_month):
 
 
 def get_unemployment_covid(ticker, company_name):
+    """ Returns the graph of median monthly stock prices vs unemployment rate during COVID-19 with the company_name
+        inputted into the graph axes and titles"""
     if len(company_name) > (len('s Median Monthly Stock Price vs Unemployment Rate (During COVID)') - 20):
         title = company_name + '\'s \n Median Monthly Stock Price vs Unemployment Rate (During COVID)'
     else:
@@ -62,33 +66,39 @@ def get_unemployment_covid(ticker, company_name):
 
 
 def get_unemployment_before(ticker, company_name):
-    if len(company_name) > (len('s Median Monthly Stock Price vs Unemployment Rate (During COVID)') - 20):
-        title = company_name + '\'s \n Median Monthly Stock Price vs Unemployment Rate (During COVID)'
+    """ Returns the graph of median monthly stock prices vs unemployment rate before COVID-19 with the company_name
+        inputted into the graph axes and titles"""
+    if len(company_name) > (len('s Median Monthly Stock Price vs Unemployment Rate (Before COVID)') - 20):
+        title = company_name + '\'s \n Median Monthly Stock Price vs Unemployment Rate (Before COVID)'
     else:
-        title = company_name + '\'s Median Monthly Stock Price \n vs Unemployment Rate (During COVID)'
+        title = company_name + '\'s Median Monthly Stock Price \n vs Unemployment Rate (Before COVID)'
     x_label = "Unemployment Rate"
     y_label = "Median Monthly Stock Price (USD)"
     return draw_graph(UnemploymentBefore(ticker), title, x_label, y_label, 8)
 
 
 def get_job_openings_covid(ticker, company_name):
-    if len(company_name) > (len('s Median Monthly Stock Price vs Unemployment Rate (During COVID)') - 20):
-        title = company_name + '\'s \n Median Monthly Stock Price vs Unemployment Rate (During COVID)'
+    """ Returns the graph of median monthly stock prices vs unemployment rate during COVID-19 with the company_name
+        inputted into the graph axes and titles"""
+    if len(company_name) > (len('s Median Monthly Stock Price vs Unemployed per Job Opening (During COVID)') - 20):
+        title = company_name + '\'s \n Median Monthly Stock Price vs Unemployed per Job Opening (During COVID)'
     else:
-        title = company_name + '\'s Median Monthly Stock Price \n vs Unemployment Rate (During COVID)'
+        title = company_name + '\'s Median Monthly Stock Price \n vs Unemployed per Job Opening (During COVID)'
     x_label = "Unemployed Per Job Opening"
     y_label = "Median Monthly Stock Price (USD)"
     return draw_graph(JobOpeningsCovid(ticker), title, x_label, y_label, 4)
 
 
 def get_job_openings_before(ticker, company_name):
-    if len(company_name) > (len('s Median Monthly Stock Price vs Unemployment Rate (During COVID)') - 20):
-        title = company_name + '\'s \n Median Monthly Stock Price vs Unemployment Rate (During COVID)'
+    """Returns the graph of median monthly stock prices vs unemployment rate during COVID-19 with the company_name
+        inputted in the title"""
+    if len(company_name) > (len('s Median Monthly Stock Price vs Unemployed per Job Opening (Before COVID)') - 20):
+        title = company_name + '\'s \n Median Monthly Stock Price vs Unemployed per Job Opening (Before COVID)'
     else:
-        title = company_name + '\'s Median Monthly Stock Price \n vs Unemployment Rate (During COVID)'
+        title = company_name + '\'s Median Monthly Stock Price \n vs Unemployed per Job Opening (Before COVID)'
     x_label = "Unemployed Per Job Opening"
     y_label = "Median Monthly Stock Price (USD)"
-    return draw_graph(JobOpeningBefore(ticker), title, x_label, y_label, 8)
+    return draw_graph(JobOpeningsBefore(ticker), title, x_label, y_label, 8)
 
 
 def error_fig():
@@ -176,4 +186,23 @@ def main_loop(pe, g1, g2, g3, g4):
                 pe = draw_figure(window['-CANVAS-'].TKCanvas, error_fig())
 
 
+if __name__ == '__main__':
+    import python_ta
+
+    python_ta.check_all(config={
+        'extra-imports': ['python_ta.contracts', 'statistics', 'numpy', 'pandas', 'datetime', 'time',
+                          'graph', 'PySimpleGUI', 'matplotlib.pyplot', 'matplotlib', 'unemployment_before',
+                          'unemployment_covid', 'unemployment_covid', 'job_openings_before', 'job_openings_covid',
+                          'matplotlib.backends.backend_tkagg', 'yfinance'],
+        'max-line-length': 200,
+        'disable': ['R1705', 'C0200']
+    })
+    import python_ta.contracts
+
+    python_ta.contracts.DEBUG_CONTRACTS = False
+    python_ta.contracts.check_all_contracts()
+
+    import doctest
+
+    doctest.testmod()
 
