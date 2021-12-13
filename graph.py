@@ -1,73 +1,122 @@
-""" Graph class """
+""" File contains top level functions and the abstract class Graph """
 import statistics
-from numpy import *
-from pandas import DataFrame
-from typing import *
 import datetime
-import numpy as np
+from numpy import ndarray, array, corrcoef
+from pandas import DataFrame
+
+
+def get_datetime_to_closing(stock_info: DataFrame) -> list[tuple[datetime, float]]:
+    """ Returns a list of tuples from stock_info where the first index is the date (datetime object)
+    and the second index is the closing price of that day """
+    list_so_far = []
+    for _, row in stock_info.iterrows():
+        datetime_obj = datetime.datetime.strptime(row['Date'], '%Y-%m-%d')
+        list_so_far.append((datetime_obj, row['Close']))
+    return list_so_far
+
+
+def get_monthly_closing_prices(starting_month: int, datetime_to_closing: list[tuple]) -> list[list]:
+    """ Returns a list where each element is a list of closing prices acquired from datetime_to_closing.
+    Each inner list contains the prices for a specific month.
+    The first inner list contains the stock prices of each day in starting_month
+
+    Preconditions:
+        - 1 <= starting_month <= 12
+    """
+    current_month = starting_month
+    temp_list = []
+    list_so_far = []
+    for day in datetime_to_closing:
+        if day[0].month == current_month:
+            temp_list.append(day[1])
+        else:
+            list_so_far.append(temp_list)
+            current_month = day[0].month
+            temp_list = []
+    list_so_far.append(temp_list)
+    return list_so_far
+
+
+def calculate_median_values(monthly_closing_prices: list[list[float]]) -> list:
+    """ Return median stock price for each month in monthly_closing_prices"""
+    list_so_far = []
+    for i in monthly_closing_prices:
+        list_so_far.append(statistics.median(i))
+    return list_so_far
+
+
+def get_r_squared(x: ndarray, y: ndarray) -> float:
+    """ Returns r^2 value based on x, y
+
+    Preconditions:
+        - x.size == y.size
+
+    >>> ind_var = array([0.9, 0.8, 0.8, 0.8, 0.9, 0.9, 0.9, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.9, 0.9])
+    >>> dep_var = array([213.320007, 221.185005, 220.2249985, 189.1050035, 164.709999, 153.5550005, 171.154999,\
+      186.324997, 200.3600005, 188.660004,  194.809998, 204.5, 204.160004 , 218.820007 , 236.040001 ,\
+      262.640015 ,279.589996 ])
+    >>> get_r_squared(ind_var, dep_var)
+    0.000629732010597634
+    """
+    correlation_matrix = corrcoef(x, y)
+    correlation_xy = correlation_matrix[0, 1]
+    r_squared = correlation_xy ** 2
+    return r_squared
 
 
 class Graph:
-    """ Abstract class graph """
+    """ Abstract class Graph
+
+    Instance Attributes:
+        - _ticker: a string of a stock ticker inputted by the user
+
+    Representation Invariants:
+        - len(self._ticker) > 0
+    """
     _ticker: str
 
     def __init__(self, ticker: str) -> None:
-        """Creates graph object with specified ticker"""
+        """Initializes a Graph"""
         self._ticker = ticker
 
     def get_stock_data(self) -> DataFrame:
         """ Returns stock data for the specified stock ticker """
         raise NotImplementedError
 
-    def get_datetime_to_closing(self, stock_info: DataFrame) -> list[tuple[datetime, Any]]:
-        """ Returns the data """
-        list_so_far = []
-        for _, row in stock_info.iterrows():
-            datetime_obj = datetime.datetime.strptime(row['Date'], '%Y-%m-%d')
-            list_so_far.append((datetime_obj, row['Close']))
-        return list_so_far
-
-    def get_monthly_closing_prices(self, starting_month: int, datetime_to_closing: list[tuple]) -> list[list]:
-        """ Returns a list of closing prices """
-        current_month = starting_month
-        temp_list = []
-        list_so_far = []
-        for day in datetime_to_closing:
-            if day[0].month == current_month:
-                temp_list.append(day[1])
-            else:
-                list_so_far.append(temp_list)
-                current_month = day[0].month
-                temp_list = []
-        list_so_far.append(temp_list)
-        return list_so_far
-
-    def calculate_median_values(self, monthly_closing_prices: list[list[float]]) -> list:
-        """ Return median stock price for each month """
-        list_so_far = []
-        for i in range(len(monthly_closing_prices)):
-            list_so_far.append(statistics.median(monthly_closing_prices[i]))
-        return list_so_far
-
-    def get_values_of_independent_variable(self) -> DataFrame:
+    def get_values_of_independent_var(self) -> DataFrame:
         """ Returns a list of data points for the specified independent variable """
         raise NotImplementedError
 
-    def get_r_squared(self, x, y) -> None:
-        """ Returns r^2 value based on x, y"""
-        correlation_matrix = np.corrcoef(x, y)
-        correlation_xy = correlation_matrix[0, 1]
-        r_squared = correlation_xy ** 2
-        return r_squared
+    def return_info_to_graph(self, starting_month: int) -> tuple[ndarray, ndarray]:
+        """ Returns a tuple where first element is an ndarray of the independent variable and the second element is
+        an ndarray of the dependent variable. Passes starting_month to get_monthly_closing_prices
 
-    def return_info_to_graph(self, starting_month) -> tuple[ndarray, ndarray]:
-        """ Returns a tuple of coordinates that matplotlib can graph """
+        Preconditions:
+            - 1 <= starting_month <= 12
+        """
         stock_info = self.get_stock_data()
-        datetime_to_closing_prices = self.get_datetime_to_closing(stock_info)  # STEP 2
-        monthly_closing_prices = self.get_monthly_closing_prices(starting_month, datetime_to_closing_prices)  # STEP 3
-        list_of_median_values = self.calculate_median_values(monthly_closing_prices)  # STEP 4
-        list_of_independent_variable_values = self.get_values_of_independent_variable()  # STEP 5
-        x = np.array(list_of_independent_variable_values)
-        y = np.array(list_of_median_values)
+        datetime_to_closing_prices = get_datetime_to_closing(stock_info)  # STEP 2
+        monthly_closing_prices = get_monthly_closing_prices(starting_month, datetime_to_closing_prices)  # STEP 3
+        list_of_x_values = calculate_median_values(monthly_closing_prices)  # STEP 4
+        list_of_y_values = self.get_values_of_independent_var()  # STEP 5
+        x = array(list_of_x_values)
+        y = array(list_of_y_values)
         return x, y
 
+
+if __name__ == '__main__':
+    import python_ta
+
+    python_ta.check_all(config={
+        'extra-imports': ['python_ta.contracts', 'statistics', 'numpy', 'pandas', 'datetime'],
+        'max-line-length': 200,
+        'disable': ['R1705', 'C0200']
+    })
+    import python_ta.contracts
+
+    python_ta.contracts.DEBUG_CONTRACTS = False
+    python_ta.contracts.check_all_contracts()
+
+    import doctest
+
+    doctest.testmod()
