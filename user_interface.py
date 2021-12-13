@@ -1,10 +1,11 @@
 """User Interface"""
+import statistics
+
 import PySimpleGUI as sg
 import numpy as np
 import matplotlib.pyplot as plt
-import yfinance as yf
 import matplotlib
-
+import yfinance as yf
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from unemployment_before import UnemploymentBefore
 from unemployment_covid import UnemploymentCovid
@@ -13,9 +14,10 @@ from job_openings_covid import JobOpeningsCovid
 from graph import get_r_squared, Graph
 
 matplotlib.use("TkAgg")
-graph_bg_color = '#343a40'
-dots_color = '#f1faee'
-trend_line_color = '#e63946'
+
+GRAPH_BG_COLOUR = '#343a40'
+DOTS_COLOUR = '#f1faee'
+TREND_LINE_COLOUR = '#e63946'
 
 
 def draw_graph(graph: Graph, title: str, x_label: str, y_label: str, starting_month: int) -> plt.Figure:
@@ -28,18 +30,18 @@ def draw_graph(graph: Graph, title: str, x_label: str, y_label: str, starting_mo
     plt.title(title)
 
     r_squared = round(get_r_squared(x, y), 2)
-    r_squared_text = "r\N{SUPERSCRIPT TWO} = " + str(r_squared)
+    r_squared_text = "R\N{SUPERSCRIPT TWO} = " + str(r_squared)
 
     font = {'fontname': 'Franklin Gothic Medium', 'color': 'white', 'size': 9}
 
     ax.text(1.01, 0.9, r_squared_text, transform=ax.transAxes, fontdict=font)
 
-    plt.plot(x, y, 'o', color=dots_color)
+    plt.plot(x, y, 'o', color=DOTS_COLOUR)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
     m, b = np.polyfit(x, y, 1)
-    plt.plot(x, m * x + b, color=trend_line_color)
+    plt.plot(x, m * x + b, color=TREND_LINE_COLOUR)
 
     fig.set_dpi(70)
     ax.spines['left'].set_color('#EEEEEE')
@@ -49,7 +51,7 @@ def draw_graph(graph: Graph, title: str, x_label: str, y_label: str, starting_mo
     ax.title.set_color('#EEEEEE')
     ax.tick_params(axis='x', colors='#EEEEEE')
     ax.tick_params(axis='y', colors='#EEEEEE')
-    ax.set_facecolor(graph_bg_color)
+    ax.set_facecolor(GRAPH_BG_COLOUR)
     fig.patch.set_facecolor('#232323')
     return fig
 
@@ -108,11 +110,11 @@ def error_fig() -> plt.Figure:
     image = plt.imread('Error_image.jpg')
     plt.imshow(image)
     plt.axis('off')
-    fig.patch.set_facecolor(graph_bg_color)
+    fig.patch.set_facecolor(GRAPH_BG_COLOUR)
     fig.set_dpi(70)
 
     font = {'fontname': 'Franklin Gothic Medium', 'color': 'white', 'size': 12}
-    plt.text(-75, 600, 'The ticker you have entered corresponds to a stock we do not have the data for.',
+    plt.text(-75, 600, 'Cannot find stock. Try a different ticker.',
              fontdict=font)
     return fig
 
@@ -126,28 +128,28 @@ def draw_figure(canvas: sg.Canvas.TKCanvas, figure: plt.Figure) -> FigureCanvasT
     return figure_canvas_agg
 
 
-figure_x, figure_y, figure_w, figure_h = get_unemployment_covid("AAPL", "Apple").bbox.bounds
+FIGURE_X, FIGURE_Y, FIGURE_W, FIGURE_H = get_unemployment_covid("AAPL", "Apple").bbox.bounds
 
-layout = [
+LAYOUT = [
     [sg.Text('Enter Stock Ticker', font='Franklin_Gothic_Medium', background_color='#232323', text_color='#EEEEEE')],
     [sg.Input(key='-INPUT-', background_color='#757575', text_color='#000000'),
      sg.Button('Search', button_color=('#000000', '#757575'))],
-    [sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS-', background_color='#232323'),
-     sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS1-', background_color='#232323')],
+    [sg.Canvas(size=(FIGURE_W, FIGURE_H * 0.9), key='-CANVAS-', background_color='#232323'),
+     sg.Canvas(size=(FIGURE_W, FIGURE_H * 0.9), key='-CANVAS1-', background_color='#232323')],
 
-    [sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS2-', background_color='#232323'),
-     sg.Canvas(size=(figure_w, figure_h * 0.9), key='-CANVAS3-', background_color='#232323')]]
+    [sg.Canvas(size=(FIGURE_W, FIGURE_H * 0.9), key='-CANVAS2-', background_color='#232323'),
+     sg.Canvas(size=(FIGURE_W, FIGURE_H * 0.9), key='-CANVAS3-', background_color='#232323')]]
 
 # logic for window
-window = sg.Window('Stock Correlation',
-                   layout, force_toplevel=True, finalize=True, background_color='#232323')
+WINDOW = sg.Window('Stock Correlation',
+                   LAYOUT, force_toplevel=True, finalize=True, background_color='#232323')
 
 # add the plot to the window
-photo_error = photo_unemployment_covid = draw_figure(window['-CANVAS1-'].TKCanvas,
+PHOTO_ERROR = PHOTO_UNEMPLOYMENT_COVID = draw_figure(WINDOW['-CANVAS1-'].TKCanvas,
                                                      get_unemployment_covid("AAPL", "Apple"))
-photo_unemployment_before = draw_figure(window['-CANVAS-'].TKCanvas, get_unemployment_before("AAPL", "Apple"))
-photo_job_openings_covid = draw_figure(window['-CANVAS3-'].TKCanvas, get_job_openings_covid("AAPL", "Apple"))
-photo_job_openings_before = draw_figure(window['-CANVAS2-'].TKCanvas, get_job_openings_before("AAPL", "Apple"))
+PHOTO_UNEMPLOYMENT_BEFORE = draw_figure(WINDOW['-CANVAS-'].TKCanvas, get_unemployment_before("AAPL", "Apple"))
+PHOTO_JOB_OPENINGS_COVID = draw_figure(WINDOW['-CANVAS3-'].TKCanvas, get_job_openings_covid("AAPL", "Apple"))
+PHOTO_JOB_OPENINGS_BEFORE = draw_figure(WINDOW['-CANVAS2-'].TKCanvas, get_job_openings_before("AAPL", "Apple"))
 
 
 def main_loop(pe: FigureCanvasTkAgg, g1: FigureCanvasTkAgg, g2: FigureCanvasTkAgg,
@@ -155,11 +157,11 @@ def main_loop(pe: FigureCanvasTkAgg, g1: FigureCanvasTkAgg, g2: FigureCanvasTkAg
     """ The main loop of the program which calls the functions to draw the canvases specific to the user's input """
     while True:
         # show it all again and get buttons
-        event, values = window.read()
+        event, values = WINDOW.read()
         if event in [sg.WIN_CLOSED, 'Exit']:
             break
         values['-INPUT-'] = ''.join(filter(str.isalnum, values['-INPUT-']))[:5]
-        window['-INPUT-'].update(values['-INPUT-'])
+        WINDOW['-INPUT-'].update(values['-INPUT-'])
         if event == 'Search':
             pe.get_tk_widget().forget()
             g1.get_tk_widget().forget()
@@ -171,22 +173,36 @@ def main_loop(pe: FigureCanvasTkAgg, g1: FigureCanvasTkAgg, g2: FigureCanvasTkAg
                 ticker = yf.Ticker(stock_query)
                 company_name = ticker.info['longName'].removesuffix(', Inc.').removesuffix(' Inc.')
 
-                g1 = draw_figure(window['-CANVAS1-'].TKCanvas,
+                g1 = draw_figure(WINDOW['-CANVAS1-'].TKCanvas,
                                  get_unemployment_covid(values['-INPUT-'], company_name))
-                g2 = draw_figure(window['-CANVAS-'].TKCanvas,
+                g2 = draw_figure(WINDOW['-CANVAS-'].TKCanvas,
                                  get_unemployment_before(values['-INPUT-'], company_name))
-                g3 = draw_figure(window['-CANVAS3-'].TKCanvas,
+                g3 = draw_figure(WINDOW['-CANVAS3-'].TKCanvas,
                                  get_job_openings_covid(values['-INPUT-'], company_name))
-                g4 = draw_figure(window['-CANVAS2-'].TKCanvas,
+                g4 = draw_figure(WINDOW['-CANVAS2-'].TKCanvas,
                                  get_job_openings_before(values['-INPUT-'], company_name))
 
-            except Exception:
+            except KeyError:
                 pe.get_tk_widget().forget()
                 g1.get_tk_widget().forget()
                 g2.get_tk_widget().forget()
                 g3.get_tk_widget().forget()
                 g4.get_tk_widget().forget()
-                pe = draw_figure(window['-CANVAS-'].TKCanvas, error_fig())
+                pe = draw_figure(WINDOW['-CANVAS-'].TKCanvas, error_fig())
+            except statistics.StatisticsError:
+                pe.get_tk_widget().forget()
+                g1.get_tk_widget().forget()
+                g2.get_tk_widget().forget()
+                g3.get_tk_widget().forget()
+                g4.get_tk_widget().forget()
+                pe = draw_figure(WINDOW['-CANVAS-'].TKCanvas, error_fig())
+            except AttributeError:
+                pe.get_tk_widget().forget()
+                g1.get_tk_widget().forget()
+                g2.get_tk_widget().forget()
+                g3.get_tk_widget().forget()
+                g4.get_tk_widget().forget()
+                pe = draw_figure(WINDOW['-CANVAS-'].TKCanvas, error_fig())
 
 
 if __name__ == '__main__':

@@ -2,5 +2,5 @@
 from user_interface import *
 
 if __name__ == '__main__':
-    main_loop(photo_error, photo_unemployment_before, photo_unemployment_covid, photo_job_openings_before,
-              photo_job_openings_covid)
+    main_loop(PHOTO_ERROR, PHOTO_UNEMPLOYMENT_BEFORE, PHOTO_UNEMPLOYMENT_COVID, PHOTO_JOB_OPENINGS_BEFORE,
+              PHOTO_JOB_OPENINGS_COVID)
