@@ -1,6 +1,6 @@
 """User Interface"""
 import statistics
-
+import urllib.error
 import PySimpleGUI as sg
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,6 +14,7 @@ from job_openings_covid import JobOpeningsCovid
 from graph import get_r_squared, Graph
 
 matplotlib.use("TkAgg")
+plt.rcParams.update({'figure.max_open_warning': 0})
 
 GRAPH_BG_COLOUR = '#343a40'
 DOTS_COLOUR = '#f1faee'
@@ -114,7 +115,7 @@ def error_fig() -> plt.Figure:
     fig.set_dpi(70)
 
     font = {'fontname': 'Franklin Gothic Medium', 'color': 'white', 'size': 12}
-    plt.text(-75, 600, 'Cannot find stock. Try a different ticker.',
+    plt.text(140, 585, 'Cannot find stock. Try a different ticker.',
              fontdict=font)
     return fig
 
@@ -145,11 +146,22 @@ WINDOW = sg.Window('Stock Correlation',
                    LAYOUT, force_toplevel=True, finalize=True, background_color='#232323')
 
 # add the plot to the window
+
 PHOTO_ERROR = PHOTO_UNEMPLOYMENT_COVID = draw_figure(WINDOW['-CANVAS1-'].TKCanvas,
                                                      get_unemployment_covid("AAPL", "Apple"))
 PHOTO_UNEMPLOYMENT_BEFORE = draw_figure(WINDOW['-CANVAS-'].TKCanvas, get_unemployment_before("AAPL", "Apple"))
 PHOTO_JOB_OPENINGS_COVID = draw_figure(WINDOW['-CANVAS3-'].TKCanvas, get_job_openings_covid("AAPL", "Apple"))
 PHOTO_JOB_OPENINGS_BEFORE = draw_figure(WINDOW['-CANVAS2-'].TKCanvas, get_job_openings_before("AAPL", "Apple"))
+
+
+def clear_ui(pe: FigureCanvasTkAgg, g1: FigureCanvasTkAgg, g2: FigureCanvasTkAgg,
+             g3: FigureCanvasTkAgg, g4: FigureCanvasTkAgg) -> None:
+    """Clears the UI"""
+    pe.get_tk_widget().forget()
+    g1.get_tk_widget().forget()
+    g2.get_tk_widget().forget()
+    g3.get_tk_widget().forget()
+    g4.get_tk_widget().forget()
 
 
 def main_loop(pe: FigureCanvasTkAgg, g1: FigureCanvasTkAgg, g2: FigureCanvasTkAgg,
@@ -163,11 +175,7 @@ def main_loop(pe: FigureCanvasTkAgg, g1: FigureCanvasTkAgg, g2: FigureCanvasTkAg
         values['-INPUT-'] = ''.join(filter(str.isalnum, values['-INPUT-']))[:5]
         WINDOW['-INPUT-'].update(values['-INPUT-'])
         if event == 'Search':
-            pe.get_tk_widget().forget()
-            g1.get_tk_widget().forget()
-            g2.get_tk_widget().forget()
-            g3.get_tk_widget().forget()
-            g4.get_tk_widget().forget()
+            clear_ui(pe, g1, g2, g3, g4)
             try:
                 stock_query = values['-INPUT-'].upper()
                 ticker = yf.Ticker(stock_query)
@@ -183,25 +191,19 @@ def main_loop(pe: FigureCanvasTkAgg, g1: FigureCanvasTkAgg, g2: FigureCanvasTkAg
                                  get_job_openings_before(values['-INPUT-'], company_name))
 
             except KeyError:
-                pe.get_tk_widget().forget()
-                g1.get_tk_widget().forget()
-                g2.get_tk_widget().forget()
-                g3.get_tk_widget().forget()
-                g4.get_tk_widget().forget()
+                clear_ui(pe, g1, g2, g3, g4)
                 pe = draw_figure(WINDOW['-CANVAS-'].TKCanvas, error_fig())
             except statistics.StatisticsError:
-                pe.get_tk_widget().forget()
-                g1.get_tk_widget().forget()
-                g2.get_tk_widget().forget()
-                g3.get_tk_widget().forget()
-                g4.get_tk_widget().forget()
+                clear_ui(pe, g1, g2, g3, g4)
                 pe = draw_figure(WINDOW['-CANVAS-'].TKCanvas, error_fig())
             except AttributeError:
-                pe.get_tk_widget().forget()
-                g1.get_tk_widget().forget()
-                g2.get_tk_widget().forget()
-                g3.get_tk_widget().forget()
-                g4.get_tk_widget().forget()
+                clear_ui(pe, g1, g2, g3, g4)
+                pe = draw_figure(WINDOW['-CANVAS-'].TKCanvas, error_fig())
+            except urllib.error.HTTPError:
+                clear_ui(pe, g1, g2, g3, g4)
+                pe = draw_figure(WINDOW['-CANVAS-'].TKCanvas, error_fig())
+            except urllib.error.URLError:
+                clear_ui(pe, g1, g2, g3, g4)
                 pe = draw_figure(WINDOW['-CANVAS-'].TKCanvas, error_fig())
 
 
