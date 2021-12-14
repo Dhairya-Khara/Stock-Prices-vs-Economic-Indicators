@@ -44,7 +44,7 @@ def draw_graph(graph: Graph, title: str, x_label: str, y_label: str, starting_mo
     m, b = np.polyfit(x, y, 1)
     plt.plot(x, m * x + b, color=TREND_LINE_COLOUR)
 
-    fig.set_dpi(70)
+    fig.set_dpi(60)
     ax.spines['left'].set_color('#EEEEEE')
     ax.spines['bottom'].set_color('#EEEEEE')
     ax.xaxis.label.set_color('#EEEEEE')
@@ -143,7 +143,7 @@ LAYOUT = [
 
 # logic for window
 WINDOW = sg.Window('Stock Correlation',
-                   LAYOUT, force_toplevel=True, finalize=True, background_color='#232323')
+                   LAYOUT, force_toplevel=True, finalize=True, background_color='#232323', resizable=True)
 
 # add the plot to the window
 
