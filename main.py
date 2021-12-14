@@ -1,4 +1,22 @@
-"""Please run this file. Make sure you 'run' the file and not 'Run File in Python Console'"""
+"""
+CSC110 Final Project: Main file
+
+Module Description
+==================
+This module contains the main file for our project. Please 'run' this file.
+IMPORTANT: Make sure you 'run' the file and do not 'Run File in Python Console'
+
+Copyright and Usage Information
+===============================
+
+This file is provided solely for the personal and private use of TAs and instructors
+teaching CSC110 at the University of Toronto St. George campus. All forms of
+distribution of this code, whether as given or with any changes, are
+expressly prohibited. For more information on copyright for CSC110 materials,
+please consult our Course Syllabus.
+
+This file is Copyright (c) 2021 Chenika Bukes, Krishna Cheemalapati, Aryan Goel, and Dhairya Khara.
+"""
 from user_interface import *
 
 if __name__ == '__main__':

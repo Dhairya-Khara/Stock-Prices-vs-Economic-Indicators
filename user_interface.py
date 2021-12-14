@@ -1,4 +1,25 @@
-"""User Interface"""
+"""
+CSC110 Final Project: User Interface class
+
+Module Description
+==================
+This module contains the code for the user interface. It draws all of the necessary graphs
+for our program and places them on the UI. It also intializes some important variables
+for our program.
+
+At the bottom of the file we've provided code to run doctest and python_ta.
+
+Copyright and Usage Information
+===============================
+
+This file is provided solely for the personal and private use of TAs and instructors
+teaching CSC110 at the University of Toronto St. George campus. All forms of
+distribution of this code, whether as given or with any changes, are
+expressly prohibited. For more information on copyright for CSC110 materials,
+please consult our Course Syllabus.
+
+This file is Copyright (c) 2021 Chenika Bukes, Krishna Cheemalapati, Aryan Goel, and Dhairya Khara.
+"""
 import statistics
 import urllib.error
 import PySimpleGUI as sg
