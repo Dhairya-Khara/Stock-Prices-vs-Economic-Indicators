@@ -26,7 +26,9 @@ April 2020 to August 2021.
 
 Since the pandemic could not have been predicted, we want to know whether the median monthly NYSE price
 action’s correlation to unemployment rates and unemployed per job opening statistics was impacted by COVID-19.
-This project will attempt to answer the research question: How has the COVID-19 pandemic impacted the
-correlation between median monthly stock prices and the classic economic indicators of Unemployment Rates and Number of Unemployed Persons per Job Opening?
+This project will attempt to answer the research question: **How has the COVID-19 pandemic impacted the
+correlation between median monthly stock prices and the classic economic indicators of Unemployment Rates and Number of Unemployed Persons per Job Opening?**
+
+
 
 
