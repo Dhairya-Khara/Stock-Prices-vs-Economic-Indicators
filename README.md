@@ -1,6 +1,14 @@
 # Stock-Prices-vs-Economic-Indicators
 This project analyzies the Impact of COVID-19 on the Correlation Between Classic Economic Indicators and Monthly Median Stock prices.
 
+## Authors
+<ul>
+  <li> <a href="https://github.com/chenikabukes">Chenika Bukes</a></li>
+  <li> <a href="https://github.com/krishnacheemalapati">Krishna Cheemalapati </a></li>
+  <li> <a href="https://github.com/aryangoel24">Aryan Goel </a></li>
+  <li> <a href="https://github.com/Dhairya-Khara">Dhairya Khara </a></li>
+ </ul>
+
 ## Introduction
 The COVID-19 pandemic has impacted the lives of people across the world.
 Industries from energy to healthcare have undergone drastic changes because of the pandemic. The New York Stock
