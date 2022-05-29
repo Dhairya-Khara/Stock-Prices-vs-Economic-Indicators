@@ -11,7 +11,7 @@ uncertainty about everything (Bloomberg).
 The US experienced grave unemployment during the first couple months of the pandemic, yet many speculate
 that the outflow of stimulus checks, the less busy schedules of individuals, and the ease with which one can access
 the stock exchange through apps like Robinhood has led to this unexpected growth. Investors have put more money
-into stocks in the last 5 months than in the previous 12 years combined (CNBC ). The average consumer spending
+into stocks in the last 5 months than in the previous 12 years combined (CNBC). The average consumer spending
 patterns have grown to include investments in the stock market. The S&P 500 gained more than 16 percent in 2020,
 a very strong return during a year of nationwide lock downs and steep job losses in the United States (Washington
 Post).
